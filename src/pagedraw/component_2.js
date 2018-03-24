@@ -3,7 +3,10 @@ import React from 'react';
 import './component_2.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { Redirect } from 'react-router'
+import axios from 'axios'
 // import axios from 'axios';
+
+var url = 'http://localhost:5000';
 
 export default class component2 extends React.Component {
     constructor(props){
@@ -24,14 +27,35 @@ export default class component2 extends React.Component {
     }
 
     handleClick() {
-        this.setState({redirect: true});
+        axios.post(url + '/input',{
+            room: this.state.roomCode,
+            score: this.state.score
+        }).then(response => {
+            console.log(response)
+            response = response.data
+            if(response == 'false' || response == false){
+                this.setState({redirect: 'bamboozle'});
+            } else if (response == 'true' || response == true){
+                this.setState({redirect: 'ayylmao'});
+            } else if (response == '') {
+                // this.setState({redirect: 'waiting'});
+            } else {
+                this.setState({redirect: 'waiting'});
+            }
+        })
     }
 
     render() {
         const { redirect } = this.state;
 
-        if (redirect) {
+        if( redirect == 'waiting'){
+            localStorage.setItem('room', this.state.roomCode);
+            localStorage.setItem('score', this.state.score);
+            return <Redirect to='/waiting'/>;
+        } else if (redirect == 'bamboozle') {
             return <Redirect to='/bamboozle'/>;
+        } else if (redirect == 'ayylmao'){
+            return <Redirect to='/ayylmao'/>;
         }
 
         return (<div className="component_2-component_2">
@@ -73,7 +97,3 @@ export default class component2 extends React.Component {
         </div>);
     }
 }
-
-// export default function Yee2 (props) {
-    // return this.component2.render()
-// }

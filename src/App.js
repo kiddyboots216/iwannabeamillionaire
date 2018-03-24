@@ -6,6 +6,7 @@ import './App.css';
 import component2 from './pagedraw/component_2'
 import Yee3 from './pagedraw/component_3'
 import Yee4 from './pagedraw/component_4'
+import Yee5 from './pagedraw/component_5'
 
 class App extends Component {
   render() {
@@ -16,6 +17,7 @@ class App extends Component {
             <Route exact path="/" component={component2} />
             <Route path="/bamboozle" component={Yee3} />
             <Route path="/ayylmao" component={Yee4} />
+            <Route paths="/waiting" component={Yee5} />
           </div>
         </Router>
       </div>
