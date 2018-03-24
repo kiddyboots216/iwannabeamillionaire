@@ -28,13 +28,13 @@ rooms = {}
 @app.route('/input', methods=["POST"])
 def addToRoom():
 	print(request.form)
-	r = request.args
+	r = request.get_json()
 	room = r['room']
 	score = r['score']
-	if (rooms[room]):
-		return jsonify(compare(score, rooms[room]))
+	if (room in rooms):
+		return json.dumps(compare(score, rooms[room]))
 	rooms[room] = score
-	return jsonify("nobody else in the room!")
+	return json.dumps("nobody else in the room!")
 
 def compare(one, two):
 	print(request.form)
