@@ -33,7 +33,8 @@ def addToRoom():
 	score = r['score']
 	if check(room):
 		return json.dumps(compare(score, rooms[room]))
-	rooms[room] = score
+	if room and score:
+		rooms[room] = score
 	return json.dumps("nobody else in the room!")
 
 def check(roomNumber):
