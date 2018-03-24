@@ -5,6 +5,7 @@ from flask import *
 import os
 import datetime
 import jsonify
+from collections import defaultdict
 app = Flask(__name__)
 BASE_URL = os.path.abspath(os.path.dirname(__file__))
 CLIENT_APP_FOLDER = os.path.join(BASE_URL, "dist")
@@ -23,7 +24,9 @@ import numpy as np
 import datetime
 np.random.seed(42)
 
-rooms = {}
+rooms = defaultdict()
+visited = defaultdict(lambda : False)
+visitedAgain = defaultdict(lambda : False)
 
 @app.route('/input', methods=["POST"])
 def addToRoom():
@@ -31,14 +34,15 @@ def addToRoom():
 	r = request.get_json()
 	room = r['room']
 	score = r['score']
-	if check(room):
-		return json.dumps(compare(score, rooms[room]))
+	if visited[room]:
+		toReturn = json.dumps(compare(score, rooms[room]))
+		visitedAgain[room] = True
+	else:
+		toReturn = json.dumps("nobody else in the room!")
 	if room and score:
 		rooms[room] = score
-	return json.dumps("nobody else in the room!")
-
-def check(roomNumber):
-	return roomNumber in rooms
+		visited[room] = True
+	return toReturn
 
 def compare(one, two):
 	print(request.form)
@@ -48,7 +52,7 @@ def compare(one, two):
 
 @app.route('/check', methods=["GET"])
 def apiCheck():
-	return json.dumps(check(request.args["room"]))
+	return json.dumps(visitedAgain[request.args['room']])
 
 if __name__ == "__main__":
 	# Setting debug to True enables debug output. This line should be
