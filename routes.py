@@ -31,16 +31,23 @@ def addToRoom():
 	r = request.get_json()
 	room = r['room']
 	score = r['score']
-	if (room in rooms):
+	if check(room):
 		return json.dumps(compare(score, rooms[room]))
 	rooms[room] = score
 	return json.dumps("nobody else in the room!")
+
+def check(roomNumber):
+	return roomNumber in rooms
 
 def compare(one, two):
 	print(request.form)
 	wellford = one
 	panda = two
 	return wellford > panda
+
+@app.route('/check', methods=["GET"])
+def apiCheck():
+	return json.dumps(check(request.args["room"]))
 
 if __name__ == "__main__":
 	# Setting debug to True enables debug output. This line should be
